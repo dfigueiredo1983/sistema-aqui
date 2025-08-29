@@ -1,0 +1,65 @@
+
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: django
+      POSTGRES_PASSWORD: django
+      POSTTGRES_DB: sistema
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - sistema-net
+
+  backend:
+    build: ./backend
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:9000
+    volumes:
+      - ./backend/app:/app
+    environment:
+      - DATABASE_URL=postgres://django:django@db:5432/sistema
+    depends_on:
+      - db
+    networks:
+      - sistema-net
+    
+  # frontend:
+  #   build: ./frontend
+  #   networks:
+  #     - sistema-net
+  # admin:
+  #   build: ./admnin
+  #   networks:
+  #     - sistema-net
+  # nginx:
+  #   image: nginx:alpine
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./nginx/conf.d:/etc/nginx/conf.d
+  #     - certbot_certs:/etc/letsencrypt
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   depends_on:
+  #     - backend
+  #     - frontend
+  #     - admin
+  #   networks:
+  #     - sistema-net
+
+  # certbot:
+  #     image: certbot/certbot
+  #     volumes:
+  #       - certbot_certs:/etc/letsencrypt
+  #       - ./nginx/conf.d:/etc/nginx/conf.d
+  #     command: certonly --webroot --webroot-path=/var/www/certbot --email seu@email.com --agree-tos --no-eff-email -d www.sistema-aqui.com.br
+  #     networks:
+  #       - sistema-net
+
+volumes:
+  db_data:
+  # certbit_certs:
+
+networks:
+  sistema-net:
