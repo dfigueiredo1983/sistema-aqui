@@ -1,0 +1,6 @@
+FROM nginx:alpine
+
+# Criar diretório frontend
+RUN mkdir -p /usr/share/nginx/html/frontend
+
+COPY dist /usr/share/nginx/html/frontend

@@ -1,0 +1,33 @@
+services:
+  nginx:
+    volumes:
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+  backend:
+    volumes:
+      - ./backend/app:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+    - "9000:9000"
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html/frontend
+    ports:
+      - "8585:80"
+
+  gestao:
+    build: 
+      context: ./gestao
+      dockerfile: Dockerfile
+    volumes:
+      - ./gestao/dist:/usr/share/nginx/html/gestao
+    ports:
+      - "8686:80"
+  

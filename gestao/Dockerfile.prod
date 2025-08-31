@@ -1,0 +1,7 @@
+FROM nginx:alpine
+
+# Criar diretório gestao
+RUN mkdir -p /usr/share/nginx/html/gestao
+
+COPY dist /usr/share/nginx/html/gestao
+

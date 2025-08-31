@@ -1,0 +1,22 @@
+services:
+  nginx:
+    volumes:
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/nginx.conf:ro
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+  backend:
+    volumes:
+      - ./backend/app:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+
+  gestao:
+    build: 
+      context: ./gestao
+      dockerfile: Dockerfile.prod

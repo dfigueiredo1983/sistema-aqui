@@ -16,6 +16,12 @@ docker compose exec backend python manage.py makemigrations
 docker compose down -v
 docker compose up -d
 
+# Remove o que não está em uso
+docker system prune
+
+# Remove tudo
+docker system prune -a
+
 
 
 

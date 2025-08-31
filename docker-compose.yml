@@ -3,19 +3,15 @@ services:
     build: 
       context: .
       dockerfile: nginx/Dockerfile
-
     container_name: nginx
     ports:
       - "80:80"
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
     depends_on:
       - backend
       - frontend
+      - gestao
     networks:
       - sistema-net
-
 
   db:
     image: postgres:15
@@ -32,50 +28,29 @@ services:
     build: ./backend
     container_name: backend
     command: gunicorn backend.wsgi:application --bind 0.0.0.0:9000
-    volumes:
-      - ./backend/app:/app
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
     environment:
       - DATABASE_URL=postgres://django:django@db:5432/sistema
     depends_on:
       - db
-    ports:
-      - "9000:9000"
-      # - "443:443"
     networks:
       - sistema-net
 
   frontend:
     build: ./frontend
     container_name: frontend
-    ports:
-      - "8585:80"
     networks:
       - sistema-net
 
   gestao:
     build: ./gestao
     container_name: gestao
-    ports:
-      - "8686:80"  # Acesso via http://localhost:8686/gestao/
     networks:
       - sistema-net
-
-  # certbot:
-  #     image: certbot/certbot
-  #     volumes:
-  #       - certbot_certs:/etc/letsencrypt
-  #       - ./nginx/conf.d:/etc/nginx/conf.d
-  #     command: certonly --webroot --webroot-path=/var/www/certbot --email seu@email.com --agree-tos --no-eff-email -d www.sistema-aqui.com.br
-  #     networks:
-  #       - sistema-net
 
 volumes:
   db_data:
   static_volume:
   media_volume:
-  # certbit_certs:
 
 networks:
   sistema-net:
